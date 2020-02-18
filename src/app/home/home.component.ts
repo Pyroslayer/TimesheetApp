@@ -192,8 +192,10 @@ export class HomeComponent implements OnInit {
 
   deleteRow(rowValue){
     if(confirm('Are you sure you want to delete TASK row '+ (rowValue+1))){
-      this.timeSheet.controls.splice(rowValue,1);
+      this.timeSheet.removeAt(rowValue);
+      this.getTotal();
     }
+    
     
   }
 
@@ -215,7 +217,10 @@ export class HomeComponent implements OnInit {
 
   deleteOthersRow(rowValue){
     if(confirm('Are you sure you want to delete OTHER row '+ (rowValue+1))){
-      this.others.controls.splice(rowValue,1);
+      this.others.removeAt(rowValue);
+      this.getTotal();
+      
+      
     }
   }
 
@@ -236,7 +241,7 @@ export class HomeComponent implements OnInit {
         hoursPerDay = 0;
       }
 
-      hours.setValue(hoursPerDay);
+      hours.setValue(Math.round(hoursPerDay*100)/100);
       
       counter++;
     });
@@ -283,7 +288,7 @@ export class HomeComponent implements OnInit {
     this.timeSheet.controls.forEach(element => {
       this.rowArray[counter] = 0;
       this.days.forEach(day => {
-
+        element.get(day).setValue(element.get(day).value);
         this.rowArray[counter] += element.get(day).value;
         this.colArray[day] += element.get(day).value;
       });
@@ -295,7 +300,7 @@ export class HomeComponent implements OnInit {
     this.others.controls.forEach(element => {
       this.othersRowArray[counter] = 0;
       this.days.forEach(day => {
-
+        element.get(day).setValue(element.get(day).value);
         this.othersRowArray[counter] += element.get(day).value;
         this.othersColArray[day] += element.get(day).value;
       });
@@ -354,6 +359,8 @@ export class HomeComponent implements OnInit {
     
     this.excel.generate(this.group, list);
     }
+    console.log(this.group.errors);
+    
 
   }
 

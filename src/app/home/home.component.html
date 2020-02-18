@@ -141,7 +141,7 @@
     <button class="btn btn-info btn-sm" (click)="newRow()">Add new task</button>&nbsp;
     <button class="btn btn-warning btn-sm" (click)="newOthersRow()">Add new Other</button>
     
-    <table class="table table-bordered table-sm">
+    <table class="table table-bordered table-sm" style="margin-top: 2px;">
         <thead>
             <th class="bg-info text-white"></th>
             <th class="bg-info text-white" style="width: 150px;">Client Name</th>
@@ -195,7 +195,7 @@
                         
                         <ng-container *ngFor="let day of days">
                             <td>
-                                <input type="number" formControlName={{day}} class="form-control form-control-sm" (change)="validateInput(i,day,'timeSheet')">
+                                <input type="number"  formControlName={{day}} class="form-control form-control-sm" (change)="validateInput(i,day,'timeSheet')">
                             </td>
                         </ng-container>
                         
@@ -290,13 +290,13 @@
             </tr>
             <tr *ngIf="timeInOut.invalid">
                 <td colspan="5"></td>
-                <td colspan="8" class="text-danger">*Total Hours of must be the same in the Time In/Out table.</td>
+                <td colspan="8" class="text-danger">*Total Hours must be the same in the Time In/Out table.</td>
             </tr>
 
         </tbody>
     </table>
-        <button class="btn btn-warning btn-sm" style="float: right;" (click)="generate()">Download</button>
-        <button class="btn btn-warning btn-sm" style="float: right; margin-right: 10px;"  (click)="setToLocal()">Save As Draft</button>
+        <button class="btn btn-primary btn-sm" style="float: right;" (click)="generate()">Download</button>
+        <button class="btn btn-success btn-sm" style="float: right; margin-right: 10px;"  (click)="setToLocal()">Save As Draft</button>
         
   
     
