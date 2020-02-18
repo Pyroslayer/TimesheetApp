@@ -1,0 +1,306 @@
+
+<div class="container" style="text-align: center;">
+    <h1>TeraSystem</h1>
+</div>
+
+<div class="container" [formGroup]="group">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-sm-4 bg-primary text-white">
+                    Employee No.
+                </div>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control form-control-sm" name="empNo" id="empNo" formControlName="empNo">
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col-sm-4 bg-primary text-white">
+                    Employee Name
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control form-control-sm" name="empName" id="empName" formControlName="empName">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4 bg-primary text-white">
+                    Employee Supervisor
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control form-control-sm" name="empSupervisor" id="empSupervisor" formControlName="empSupervisor">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4 bg-primary text-white">
+                    Sprvsr & Emp Initials
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control form-control-sm" name="empInitials" id="empInitials" formControlName="empInitials" placeholder="Sprvsr and Emp Initial ex. 'FEAJAF'">
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="col-sm-4 bg-primary text-white">
+                    Group
+                </div>
+                <div class="col-sm-6">
+                    <select name="empGroup" id="empGroup" class="form-control form-control-sm" formControlName="group">
+                        <ng-container *ngFor="let group of empGroup; let i = index" >
+                            <option value={{i}}>{{group}}</option>
+                        </ng-container>
+                    </select>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-sm-6">
+            <div class="row">
+                <strong>
+                    Period Covered:
+                </strong>
+                
+            </div>
+            <div class="row">
+                <div class="col-sm-2 bg-success">
+                    From: 
+                </div>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control form-control-sm" formControlName="dateFrom" disabled>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-2 bg-success">
+                    To: 
+                </div>
+                <div class="col-sm-6">
+                    <input type="date" class="form-control form-control-sm" formControlName="dateTo" (change)="setDate()">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="container" [formGroup]="group">
+    <table class="table table-sm">
+        <thead>
+            <th></th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+        </thead>
+        <tbody>
+            <ng-container formArrayName="timeInOut">               
+                    <tr>
+                        <td>Time In</td>
+                        <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
+                            <td [formGroupName]="i">
+                                <input type="time" class="form-control form-control-sm" formControlName="timeIn" (change)="getHoursPerDay()">
+                            </td>
+                       
+                        </ng-container>
+                    </tr>
+
+                    <tr>
+                        <td>Time Out</td>
+                        <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
+                            <td [formGroupName]="i">
+                                <input type="time" class="form-control form-control-sm" formControlName="timeOut" (change)="getHoursPerDay()">
+                            </td>
+                       
+                        </ng-container>
+                    </tr>
+
+                    <tr>
+                        <td>Total Hours</td>
+                        <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
+                            <td [formGroupName]="i">
+                                <input type="number" class="form-control form-control-sm" formControlName="hours" disabled >
+                            </td>
+                       
+                        </ng-container>
+                    </tr>
+                
+
+            </ng-container>
+            
+        </tbody>
+    </table>
+</div>
+
+<div class="container" [formGroup]="group" style="margin-bottom: 5%;">
+
+    <button class="btn btn-info btn-sm" (click)="newRow()">Add new task</button>&nbsp;
+    <button class="btn btn-warning btn-sm" (click)="newOthersRow()">Add new Other</button>
+    
+    <table class="table table-bordered table-sm">
+        <thead>
+            <th class="bg-info text-white"></th>
+            <th class="bg-info text-white" style="width: 150px;">Client Name</th>
+            <th class="bg-info text-white" style="width: 180px;">Project Name</th>
+            <th class="bg-info text-white" style="width: 150px;">Task</th>
+            <th class="bg-info text-white" style="width: 300px;">Activities</th>
+            <th class="bg-secondary text-white" style="width: 80px;">Sat</th>
+            <th class="bg-secondary text-white" style="width: 80px;">Sun</th>
+            <th class="bg-secondary text-white" style="width: 80px;">Mon</th>
+            <th class="bg-secondary text-white" style="width: 80px;">Tue</th>
+            <th class="bg-secondary text-white" style="width: 80px;">Wed</th>
+            <th class="bg-secondary text-white" style="width: 80px;">Thu</th>
+            <th class="bg-secondary text-white" style="width: 80px;">Fri</th>
+            <th class="bg-success text-white">Total</th>
+        </thead>
+        <tbody>
+            <ng-container formArrayName="timeSheet">
+                <ng-container *ngFor="let number of timeSheet.controls; let i = index" > 
+                    <tr [formGroupName]="i">
+                        <td>
+                            <button class="btn btn-danger btn-sm" (click)="deleteRow(i)">X</button>
+                        </td>
+                        
+                        <td>
+                            <select name="clientName" id="clientName" class="form-control form-control-sm" formControlName="cName">
+                                <ng-container *ngFor="let client of cName; let i = index" >
+                                    <option value={{i}}>{{client}}</option>
+                                </ng-container>
+                            </select>
+                        </td>
+        
+                        <td>
+                            <select name="projName" id="projName" class="form-control form-control-sm" formControlName="pName">
+                                <ng-container *ngFor="let project of pName; let i = index">
+                                    <option value={{i}}>{{project}}</option>
+                                </ng-container>
+                            </select>
+                        </td>
+        
+                        <td>
+                            <select name="task" id="task" class="form-control form-control-sm" formControlName="task">
+                                <ng-container *ngFor="let task of tasks; let i = index">
+                                    <option value={{i}}>{{task}}</option>
+                                </ng-container>
+                            </select>
+                        </td>
+        
+                        <td>
+                            <input type="text" formControlName="activity" class="form-control form-control-sm">
+                        </td>
+                        
+                        <ng-container *ngFor="let day of days">
+                            <td>
+                                <input type="number" formControlName={{day}} class="form-control form-control-sm" (change)="validateInput(i,day,'timeSheet')">
+                            </td>
+                        </ng-container>
+                        
+                        
+                        <td class="table-success">
+                            {{ rowArray[i] }}
+                        </td>
+                        
+                    </tr>
+                </ng-container>
+            </ng-container>
+            
+            <tr>
+                <td colspan="4"></td>
+                <td style="text-align: right;"><strong>Total Work Hours:</strong></td>
+                <ng-container *ngFor="let day of days">
+                    <td class="table-warning">{{colArray[day]}}</td>
+                </ng-container>
+                <td class="bg-warning">{{ totalRowCol }}</td>
+
+            </tr>
+
+            <tr style="text-align: center;">
+                <td colspan="2" class="bg-warning text-white"></td>
+                <td class="bg-warning text-white">Type</td>
+                <td class="bg-warning text-white">Activity</td>
+                <td class="bg-warning text-white">Description</td>
+                <td colspan="8"></td>                
+            </tr>
+
+            <ng-container formArrayName="others">
+                <ng-container *ngFor="let other of others.controls; let i = index" > 
+                    <tr [formGroupName]="i">
+                        <td colspan="2">
+                            <button class="btn btn-danger btn-sm" (click)="deleteOthersRow(i)">X</button>
+                        </td>
+                        <td>
+                            <select name="type" id="type" class="form-control form-control-sm" formControlName="type">
+                                <ng-container *ngFor="let type of othersType; let i = index">
+                                    <option value={{i}}>{{type}}</option>
+                                </ng-container>
+                            </select>
+                        </td>
+
+                        <td>
+                            <select name="activity" id="activity" class="form-control form-control-sm" formControlName="activity">
+                                <ng-container *ngFor="let act of othersActivity; let i = index">
+                                    <option value={{i}}>{{act}}</option>
+                                </ng-container>
+                            </select>
+                        </td>
+
+                        <td>
+                            <input type="text" class="form-control form-control-sm" formControlName="description">
+                        </td>
+
+                        <ng-container *ngFor="let day of days">
+                            <td>
+                                <input type="number" formControlName={{day}} class="form-control form-control-sm" (change)="validateInput(i,day,'others')">
+                            </td>
+                        </ng-container>
+                        <td class="table-success">
+                            {{ othersRowArray[i] }}
+                        </td>
+                    </tr>
+                </ng-container>
+            </ng-container>
+            <tr>
+                <td colspan="4"></td>
+                <td style="text-align: right;"><strong>Total Non-Work Hours:</strong></td>
+                <ng-container *ngFor="let day of days">
+                    <td class="table-warning">{{othersColArray[day]}}</td>
+                </ng-container>
+                <td class="bg-warning">{{ othersTotalRowCol }}</td>
+
+            </tr>
+
+            <tr>
+                <td colspan="4"></td>
+                <td style="text-align: right;"><strong>Total Hours:</strong></td>
+                <ng-container *ngFor="let day of days; let i = index">
+                    <ng-container *ngIf="timeInOut.controls[i].get('hours').valid">
+                        <td class="bg-success">{{finalRow[day]}}</td>
+                    </ng-container>
+                    <ng-container *ngIf="timeInOut.controls[i].get('hours').invalid">
+                        <td class="bg-danger">{{finalRow[day]}}</td>
+                    </ng-container>
+
+                </ng-container>
+                <td class="bg-primary">{{ finalTotal }}</td>
+
+            </tr>
+            <tr *ngIf="timeInOut.invalid">
+                <td colspan="5"></td>
+                <td colspan="8" class="text-danger">*Total Hours of must be the same in the Time In/Out table.</td>
+            </tr>
+
+        </tbody>
+    </table>
+        <button class="btn btn-warning btn-sm" style="float: right;" (click)="generate()">Download</button>
+        <button class="btn btn-warning btn-sm" style="float: right; margin-right: 10px;"  (click)="setToLocal()">Save As Draft</button>
+        
+  
+    
+
+</div>
+
+
