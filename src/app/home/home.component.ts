@@ -28,6 +28,8 @@ export class HomeComponent implements OnInit {
   othersActivity;
   finalRow: number[] = [0];
   totalClass = [];
+  headerToggle = true;
+  tableToggle = true;
 
   
   
@@ -80,8 +82,32 @@ export class HomeComponent implements OnInit {
     this.mapRows();
 
     this.getTotal();
+    this.checkErrors();
     
     
+  }
+
+  checkErrors() {
+    if ( this.group.get('empNo').valid && 
+        this.group.get('empName').valid &&
+        this.group.get('empSupervisor').valid && 
+        this.group.get('empInitials').valid && 
+        this.group.get('group').valid){
+          this.headerToggle = false;
+    }
+    else {
+      this.headerToggle = true;
+    }
+    
+
+  }
+
+  tableButtonToggle(){
+    this.tableToggle = !this.tableToggle;
+  }
+
+  headerButtonToggle(){
+    this.headerToggle = !this.headerToggle;
   }
 
   mapRows(){

@@ -1,153 +1,174 @@
 
 <div class="container" style="text-align: center;">
-    <h1>TeraSystem</h1>
+    <img src="../../assets/teralogo.png" alt="TeraSystem" width="300px" style="margin:10px;">
 </div>
 
-<div class="container" [formGroup]="group">
+<div class="container" [formGroup]="group" style="background-color:  #5A5A5A; padding: 5px; border-radius: 10px; color: white;">
     <div class="row">
-        <div class="col-sm-6">
-            <div class="row">
-                <div class="col-sm-4 bg-primary text-white">
-                    Employee No.
+        <a href="#" onclick="return false;" (click)="headerButtonToggle()" style="margin-left: 10px; color: white;">
+            <svg class="bi bi-chevron-down" width="25" height="25" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z" clip-rule="evenodd"/></svg>
+
+        </a>
+        <h5>Employee Information</h5>
+    </div>
+    <div class="row">
+        <ng-container *ngIf ="headerToggle">
+            <div class="col-sm-6" >
+                <div class="row">
+                    <div class="col-sm-4">
+                        Employee No.
+                    </div>
+                    <div class="col-sm-6 inputHeader">
+                        <input type="number" class="form-control form-control-sm" name="empNo" id="empNo" formControlName="empNo">
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <input type="number" class="form-control form-control-sm" name="empNo" id="empNo" formControlName="empNo">
+            
+                <div class="row">
+                    <div class="col-sm-4">
+                        Employee Name
+                    </div>
+                    <div class="col-sm-6 inputHeader">
+                        <input type="text" class="form-control form-control-sm" name="empName" id="empName" formControlName="empName">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-4">
+                        Employee Supervisor
+                    </div>
+                    <div class="col-sm-6 inputHeader">
+                        <input type="text" class="form-control form-control-sm" name="empSupervisor" id="empSupervisor" formControlName="empSupervisor">
+                    </div>
                 </div>
             </div>
         
-            <div class="row">
-                <div class="col-sm-4 bg-primary text-white">
-                    Employee Name
+            <div class="col-sm-6" style="text-align: right;">
+                <div class="row">
+                    <div class="col-sm-4">
+                        Supervisor & Employee Initials
+                    </div>
+                    <div class="col-sm-6 inputHeader">
+                        <input type="text" class="form-control form-control-sm" name="empInitials" id="empInitials" formControlName="empInitials" placeholder="Sprvsr and Emp Initial ex. 'FEAJAF'">
+                    </div>
                 </div>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-sm" name="empName" id="empName" formControlName="empName">
+            
+                <div class="row">
+                    <div class="col-sm-4">
+                        Group
+                    </div>
+                    <div class="col-sm-6 inputHeader">
+                        <select name="empGroup" id="empGroup" class="form-control form-control-sm" formControlName="group">
+                            <ng-container *ngFor="let group of empGroup; let i = index" >
+                                <option value={{i}}>{{group}}</option>
+                            </ng-container>
+                        </select>
+                    </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-4 bg-primary text-white">
-                    Employee Supervisor
-                </div>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-sm" name="empSupervisor" id="empSupervisor" formControlName="empSupervisor">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-sm-4 bg-primary text-white">
-                    Sprvsr & Emp Initials
-                </div>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-sm" name="empInitials" id="empInitials" formControlName="empInitials" placeholder="Sprvsr and Emp Initial ex. 'FEAJAF'">
-                </div>
-            </div>
-        
-            <div class="row">
-                <div class="col-sm-4 bg-primary text-white">
-                    Group
-                </div>
-                <div class="col-sm-6">
-                    <select name="empGroup" id="empGroup" class="form-control form-control-sm" formControlName="group">
-                        <ng-container *ngFor="let group of empGroup; let i = index" >
-                            <option value={{i}}>{{group}}</option>
-                        </ng-container>
-                    </select>
-                </div>
-            </div>
-        </div>
-    
-        <div class="col-sm-6">
-            <div class="row">
-                <strong>
-                    Period Covered:
-                </strong>
                 
-            </div>
-            <div class="row">
-                <div class="col-sm-2 bg-success">
-                    From: 
-                </div>
-                <div class="col-sm-6">
-                    <input type="date" class="form-control form-control-sm" formControlName="dateFrom" disabled>
-                </div>
-            </div>
 
-            <div class="row">
-                <div class="col-sm-2 bg-success">
-                    To: 
-                </div>
-                <div class="col-sm-6">
-                    <input type="date" class="form-control form-control-sm" formControlName="dateTo" (change)="setDate()">
-                </div>
             </div>
+    
 
-        </div>
+        </ng-container>
+        
     </div>
 </div>
 
-<div class="container" [formGroup]="group">
-    <table class="table table-sm">
-        <thead>
-            <th></th>
-            <th>Saturday</th>
-            <th>Sunday</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-            <th>Friday</th>
-        </thead>
-        <tbody>
-            <ng-container formArrayName="timeInOut">               
-                    <tr>
-                        <td>Time In</td>
-                        <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
-                            <td [formGroupName]="i">
-                                <input type="time" class="form-control form-control-sm" formControlName="timeIn" (change)="getHoursPerDay()">
-                            </td>
-                       
-                        </ng-container>
-                    </tr>
+<div class="container" [formGroup]="group" style="margin-top: 5px; background-color: #5a5a5a; padding: 5px; border-radius: 10px;">
+    <div class="row text-white">
+        <a href="#" onclick="return false;" (click)="tableButtonToggle()" style="margin-left: 10px; color: white;">
+            <svg class="bi bi-chevron-down" width="25" height="25" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.646 3.646a.5.5 0 01.708 0l6 6a.5.5 0 010 .708l-6 6a.5.5 0 01-.708-.708L12.293 10 6.646 4.354a.5.5 0 010-.708z" clip-rule="evenodd"/></svg>
 
-                    <tr>
-                        <td>Time Out</td>
-                        <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
-                            <td [formGroupName]="i">
-                                <input type="time" class="form-control form-control-sm" formControlName="timeOut" (change)="getHoursPerDay()">
-                            </td>
-                       
-                        </ng-container>
-                    </tr>
+        </a>
+        <h5>Time In/Out</h5>
+    </div>
 
-                    <tr>
-                        <td>Total Hours</td>
-                        <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
-                            <td [formGroupName]="i">
-                                <input type="number" class="form-control form-control-sm" formControlName="hours" disabled >
-                            </td>
-                       
-                        </ng-container>
-                    </tr>
+    <ng-container *ngIf = "tableToggle">
+        <div class="row text-white" style="padding: 5px;">
+            <div class="col-sm-3">
+                <div class="row">
+                    <label class="col-sm-3">From: </label>
+                    <input type="date" class="form-control form-control-sm col-sm-9" formControlName="dateFrom" disabled style="width: 150px;;"> 
+
+                </div>
                 
+            </div>
 
-            </ng-container>
-            
-        </tbody>
-    </table>
+            <div class="col-sm-3">
+                <div class="row">
+                    <label class="col-sm-3">To: </label>
+                    <input type="date" class="form-control form-control-sm col-sm-9" formControlName="dateTo" (change)="setDate()" style="width: 150px;;">
+                    
+                </div>                
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+
+        <table class="table table-sm text-white">
+            <thead>
+                <th></th>
+                <th>Saturday</th>
+                <th>Sunday</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+            </thead>
+            <tbody>
+                <ng-container formArrayName="timeInOut">               
+                        <tr>
+                            <td>Time In</td>
+                            <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
+                                <td [formGroupName]="i">
+                                    <input type="time" class="form-control form-control-sm" formControlName="timeIn" (change)="getHoursPerDay()">
+                                </td>
+                        
+                            </ng-container>
+                        </tr>
+
+                        <tr>
+                            <td>TimeOut</td>
+                            <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
+                                <td [formGroupName]="i">
+                                    <input type="time" class="form-control form-control-sm" formControlName="timeOut" (change)="getHoursPerDay()">
+                                </td>
+                        
+                            </ng-container>
+                        </tr>
+
+                        <tr>
+                            <td>Total Hours</td>
+                            <ng-container *ngFor="let number of timeInOut.controls; let i = index" > 
+                                <td [formGroupName]="i">
+                                    <input type="number" class="form-control form-control-sm" formControlName="hours" disabled >
+                                </td>
+                        
+                            </ng-container>
+                        </tr>
+                    
+
+                </ng-container>
+                
+            </tbody>
+        </table>
+        
+    </ng-container>
+    
 </div>
 
-<div class="container" [formGroup]="group" style="margin-bottom: 5%;">
+<div class="container" [formGroup]="group" style="margin-bottom: 5%; margin-top: 10px;">
 
-    <button class="btn btn-info btn-sm" (click)="newRow()">Add new task</button>&nbsp;
-    <button class="btn btn-warning btn-sm" (click)="newOthersRow()">Add new Other</button>
+    <button class="btn btn-sm text-white" (click)="newRow()" style="background-color:#474747;">Add new task</button>&nbsp;
+    <button class="btn btn-sm text-white" (click)="newOthersRow()" style="background-color: #777777;">Add new Other</button>
     
-    <table class="table table-bordered table-sm" style="margin-top: 2px;">
-        <thead>
-            <th class="bg-info text-white"></th>
-            <th class="bg-info text-white" style="width: 150px;">Client Name</th>
-            <th class="bg-info text-white" style="width: 180px;">Project Name</th>
-            <th class="bg-info text-white" style="width: 150px;">Task</th>
-            <th class="bg-info text-white" style="width: 300px;">Activities</th>
+    <table class="table table-bordered table-sm" style="margin-top: 5px;">
+        <thead style="text-align: center;">
+            <th class="text-white" style="background-color:#474747;"></th>
+            <th class="text-white" style="width: 150px; background-color:#474747;">Client Name</th>
+            <th class="text-white" style="width: 180px; background-color:#474747;">Project Name</th>
+            <th class="text-white" style="width: 150px; background-color:#474747;">Task</th>
+            <th class="text-white" style="width: 300px; background-color:#474747;">Activities</th>
             <th class="bg-secondary text-white" style="width: 80px;">Sat</th>
             <th class="bg-secondary text-white" style="width: 80px;">Sun</th>
             <th class="bg-secondary text-white" style="width: 80px;">Mon</th>
@@ -155,7 +176,7 @@
             <th class="bg-secondary text-white" style="width: 80px;">Wed</th>
             <th class="bg-secondary text-white" style="width: 80px;">Thu</th>
             <th class="bg-secondary text-white" style="width: 80px;">Fri</th>
-            <th class="bg-success text-white">Total</th>
+            <th class="text-white" style="background-color: #303030;">Total</th>
         </thead>
         <tbody>
             <ng-container formArrayName="timeSheet">
@@ -219,11 +240,11 @@
             </tr>
 
             <tr style="text-align: center;">
-                <td colspan="2" class="bg-warning text-white"></td>
-                <td class="bg-warning text-white">Type</td>
-                <td class="bg-warning text-white">Activity</td>
-                <td class="bg-warning text-white">Description</td>
-                <td colspan="8"></td>                
+                <th colspan="2" class="text-white" style="background-color: #777777;"></th>
+                <th class="text-white" style="background-color: #777777;">Type</th>
+                <th class="text-white" style="background-color: #777777;">Activity</th>
+                <th class="text-white" style="background-color: #777777;">Description</th>
+                <th colspan="8"></th>                
             </tr>
 
             <ng-container formArrayName="others">
