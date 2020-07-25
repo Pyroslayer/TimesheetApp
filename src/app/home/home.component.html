@@ -1,6 +1,6 @@
 
 <div class="container" style="text-align: center;">
-    <img src="../../assets/teralogo.png" alt="TeraSystem" width="300px" style="margin:10px;">
+    <img src="../../Timesheet/assets/teralogo.png" alt="TeraSystem" width="300px" style="margin:10px;">
 </div>
 
 <div class="container" [formGroup]="group" style="background-color:  #5A5A5A; padding: 5px; border-radius: 10px; color: white;">
@@ -56,12 +56,13 @@
                     <div class="col-sm-4">
                         Group
                     </div>
-                    <div class="col-sm-6 inputHeader">
-                        <select name="empGroup" id="empGroup" class="form-control form-control-sm" formControlName="group">
+                    <div class="col-sm-6 inputHeader" >
+                        <input list="empGroup" name="empGroup" class="form-control form-control-sm" formControlName="group">
+                        <datalist id="empGroup">
                             <ng-container *ngFor="let group of empGroup; let i = index" >
-                                <option value={{i}}>{{group}}</option>
+                                <option value={{group}}></option>
                             </ng-container>
-                        </select>
+                        </datalist>
                     </div>
                 </div>
                 
@@ -98,6 +99,18 @@
                 <div class="row">
                     <label class="col-sm-3">To: </label>
                     <input type="date" class="form-control form-control-sm col-sm-9" formControlName="dateTo" (change)="setDate()" style="width: 150px;;">
+                    
+                </div>                
+            </div>
+
+            <div class="col-sm-6">
+                <div class="row" >
+                    <div class="col-sm-8"></div>
+                    <div class="col-sm-4">
+                        <button class="btn btn-sm" (click)=timeIn() style="background-color: #d4d4d4;">Time In</button> &nbsp;
+                        <button class="btn btn-sm" (click)=timeOut() style="background-color: #d4d4d4;">Time Out</button>
+                    </div>
+                        
                     
                 </div>                
             </div>
@@ -187,27 +200,30 @@
                         </td>
                         
                         <td>
-                            <select name="clientName" id="clientName" class="form-control form-control-sm" formControlName="cName">
+                            <input list="clientName" name="clientName" class="form-control form-control-sm" formControlName="cName">
+                            <datalist id="clientName" >
                                 <ng-container *ngFor="let client of cName; let i = index" >
-                                    <option value={{i}}>{{client}}</option>
+                                    <option value={{client}}></option>
                                 </ng-container>
-                            </select>
+                            </datalist>
                         </td>
         
                         <td>
-                            <select name="projName" id="projName" class="form-control form-control-sm" formControlName="pName">
+                            <input list="projName" name="projName"  class="form-control form-control-sm" formControlName="pName">
+                            <datalist id="projName">
                                 <ng-container *ngFor="let project of pName; let i = index">
-                                    <option value={{i}}>{{project}}</option>
+                                    <option value={{project}}></option>
                                 </ng-container>
-                            </select>
+                            </datalist>
                         </td>
         
                         <td>
-                            <select name="task" id="task" class="form-control form-control-sm" formControlName="task">
+                            <input list="task" name="task" class="form-control form-control-sm" formControlName="task">
+                            <datalist id="task">
                                 <ng-container *ngFor="let task of tasks; let i = index">
-                                    <option value={{i}}>{{task}}</option>
+                                    <option value={{task}}></option>
                                 </ng-container>
-                            </select>
+                            </datalist>
                         </td>
         
                         <td>
@@ -254,19 +270,21 @@
                             <button class="btn btn-danger btn-sm" (click)="deleteOthersRow(i)">X</button>
                         </td>
                         <td>
-                            <select name="type" id="type" class="form-control form-control-sm" formControlName="type">
+                            <input list="type" name="type" class="form-control form-control-sm" formControlName="type">
+                            <datalist id="type">
                                 <ng-container *ngFor="let type of othersType; let i = index">
-                                    <option value={{i}}>{{type}}</option>
+                                    <option value={{type}}></option>
                                 </ng-container>
-                            </select>
+                            </datalist>
                         </td>
 
                         <td>
-                            <select name="activity" id="activity" class="form-control form-control-sm" formControlName="activity">
+                            <input list="activity" name="activity" class="form-control form-control-sm" formControlName="activity">
+                            <datalist id="activity">
                                 <ng-container *ngFor="let act of othersActivity; let i = index">
-                                    <option value={{i}}>{{act}}</option>
+                                    <option value={{act}}></option>
                                 </ng-container>
-                            </select>
+                            </datalist>
                         </td>
 
                         <td>
@@ -316,12 +334,466 @@
 
         </tbody>
     </table>
-        <button class="btn btn-primary btn-sm" style="float: right;" (click)="generate()">Download</button>
-        <button class="btn btn-success btn-sm" style="float: right; margin-right: 10px;"  (click)="setToLocal()">Save As Draft</button>
-        
-  
-    
+        <button class="btn btn-primary btn-sm" style="float: right;" (click)="generate()">Download </button>
+        <!-- <button class="btn btn-success btn-sm" style="float: right; margin-right: 10px;"  (click)="setToLocal()">Save As Draft</button> -->
+        <button class="btn btn-primary btn-sm" style="float: left;" (click)="toggleWFH()" style="margin: 5px;">Generate WFH</button>
+        <button class="btn btn-primary btn-sm" style="float: left;" (click)="toggleEmail()" style="margin: 5px;">Send Email</button>
 
 </div>
+
+<ng-container *ngIf=showWFH>
+    <div class="modal2" [formGroup]="group">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title">WFH Task Accomplishments</h5>
+          <button type="button" class="close" (click)="toggleWFH()">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div class="row">
+
+                    <div class="col-sm-1">Day:</div>
+                    <div class="col-sm-2">
+                        <select class="form-control form-control-sm" formControlName="wfh">
+                            <ng-container *ngFor="let day of days; let i = index">
+                                <option value="{{i}}">{{day| titlecase}}</option>
+                            </ng-container>
+                            
+                        </select>
+                    </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-sm-1">Date:</div>
+                <div class="col-sm-2">
+                    {{ dateArray[group.get('wfh').value] }}
+                </div>
+
+            </div>
+            <br><br>
+            <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">Hi Sir!</p>
+            <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">Please see work from home details for {{ dateArray[group.get('wfh').value] }} ({{days[group.get('wfh').value]| titlecase}}):</p>
+            <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">Attendance Detail:</p>
+            <table border="1" cellspacing="0" cellpadding="0" align="left" style="border-collapse:collapse;border:none;margin-left:6.75pt;margin-right:6.75pt"><tbody><tr style="height:17.1pt"><td width="103" valign="top" style="width:77.3pt;border:1pt solid windowtext;padding:0cm 5.4pt;height:17.1pt"><p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>LOG IN</b></p></td><td width="103" valign="top" style="width:77.3pt;border-top:1pt solid windowtext;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:none;padding:0cm 5.4pt;height:17.1pt"><p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>LOG OUT</b></p></td></tr><tr style="height:17.1pt"><td width="103" valign="top" style="width:77.3pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt;height:17.1pt"><p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                {{  
+                (group.get('timeInOut')['controls'][group.get('wfh').value].get('timeIn').value!==null)?('2000-01-01T'+group.get('timeInOut')['controls'][group.get('wfh').value].get('timeIn').value | date:'shortTime':'undefined':'en-US'):''}}</p></td><td width="103" valign="top" style="width:77.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt;height:17.1pt"><p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    
+                {{ 
+                (group.get('timeInOut')['controls'][group.get('wfh').value].get('timeOut').value!==null)?('2000-01-01T'+group.get('timeInOut')['controls'][group.get('wfh').value].get('timeOut').value | date:'shortTime':'undefined':'en-US'):''}}</p></td></tr></tbody></table>
+            <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+            <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+            <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+            <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">Task Accomplishment Summary for the day</p>
+
+            <table border="0" cellspacing="0" cellpadding="0" width="601" style="width:450.8pt;border-collapse:collapse">
+                <tbody>
+                   <tr>
+                      <td width="200" valign="top" style="width:150.25pt;border:1pt solid windowtext;padding:0cm 5.4pt">
+                         <p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>TASK</b></p>
+                      </td>
+                      <td width="200" valign="top" style="width:150.25pt;border-top:1pt solid windowtext;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:none;padding:0cm 5.4pt">
+                         <p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>STATUS</b></p>
+                      </td>
+                      <td width="200" valign="top" style="width:150.3pt;border-top:1pt solid windowtext;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:none;padding:0cm 5.4pt">
+                         <p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>REMARKS</b></p>
+                      </td>
+                   </tr>
+                   <tr *ngIf="wfhTasks.length === 0">
+                    <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                        <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">No task for the day</p>
+                     </td>
+                     <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+                     <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+                  
+                    </tr>
+                   <ng-container *ngFor="let task of wfhArray; let i = index">
+                    <tr>
+                        <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                           <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">{{wfhTasks[i]}}</p>
+                        </td>
+                        <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                        
+                        <ng-container *ngIf="showEditWFH">
+                            <input class="form-control form-control-sm" list=wfhStatus [(ngModel)]="wfhArray[i]['status']" [ngModelOptions]="{standalone: true}">
+                            <datalist id=wfhStatus>
+                                <option value="Completed"></option>
+                                <option value="Ongoing"></option>
+                                
+                            </datalist>
+                        </ng-container>
+                        <ng-container *ngIf="!showEditWFH">
+                            {{wfhArray[i]['status']}}
+                        </ng-container>
+                        
+                        </td>
+                        <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                            <ng-container *ngIf="showEditWFH">
+                                <input class="form-control form-control-sm" [(ngModel)]="wfhArray[i]['remarks']" [ngModelOptions]="{standalone: true}">
+                            </ng-container>
+                            <ng-container *ngIf="!showEditWFH">
+                                {{wfhArray[i]['remarks']}}
+                            </ng-container>
+                            
+                        </td>
+                     </tr>
+                   </ng-container>
+                   <tr>
+                    <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;
+                        &nbsp;
+                       </p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                    </td>
+                 </tr>
+                 <tr>
+                    <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;
+                        &nbsp;
+                       </p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                    </td>
+                 </tr>
+                    
+                   
+                   <tr>
+                      <td width="601" colspan="3" valign="top" style="width:450.8pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                         <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>Other tasks on Queue:</b></p>
+                      </td>
+                   </tr>
+                   <tr *ngIf="wfhQueue.length === 0">
+                    <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                        <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">No pending task</p>
+                     </td>
+                     <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+                     <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+                  
+                    </tr>
+                   <ng-container *ngFor="let task of wfhQueue">
+                    <tr>
+                        <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                           <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">{{task}}</p>
+                        </td>
+                        <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                        </td>
+                        <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+                     </tr>
+                   </ng-container>
+                   <tr>
+                    <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;
+                        &nbsp;
+                       </p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                    </td>
+                 </tr>
+                 <tr>
+                    <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;
+                        &nbsp;
+                       </p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                    </td>
+                 </tr>
+                   
+                   
+                </tbody>
+             </table>
+
+           
+            
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer">
+            <ng-container *ngIf=showEditWFH>
+                <button type="button" class="btn btn-success" (click)="toggleEditWFH()">Done</button>
+            </ng-container>
+            <ng-container *ngIf=!showEditWFH>
+                <button type="button" class="btn btn-primary" (click)="toggleEditWFH()">Edit</button>
+            </ng-container>
+          
+        </div>
+  
+      </div>
+    </div>
+
+</ng-container>
+
+<ng-container *ngIf=showEmail>
+    <div class="modal2" [formGroup]="emailGroup">
+      <div class="modal-content">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title">Send Email</h5>
+          <button type="button" class="close" (click)="toggleEmail()">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+            <ng-container>
+                <div class="form-group row">
+                    <div class="col-md-6 input-group"  style="padding-left: 2%; padding-right: 2%;" >
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-at"></i></div>
+                          </div>
+                        <input type="email" class="form-control" placeholder="Email Address" formControlName="userEmail">
+                    </div>
+                    <div class="col-md-6 input-group"  style="padding-left: 2%; padding-right: 2%;">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-lock"></i></div>
+                          </div>
+                        <input type="password" class="form-control" placeholder="Password" formControlName="userPassword">
+                    </div>
+                    
+                     
+                    
+                </div>
+                    
+                <hr>
+                <br>
+                <ng-container formArrayName="toEmail">
+                    <div *ngFor="let email of toEmail.controls; let i = index" class="form-group row" >
+                        <ng-container [formGroupName]="i">
+                        <label  class="col-md-1" for=""><ng-container *ngIf="i=== 0">To</ng-container></label>
+                        <input type="email" class="form-control form-control-sm col-md-4" placeholder="To" formControlName="email">
+                        <button *ngIf="i=== 0" class="btn btn-sm" (click)="newTo()"><i class="fas fa-plus"></i></button>
+                        <button *ngIf="i!== 0" class="btn btn-sm"(click)="deleteTo(i)"><i class="fas fa-minus"></i></button></ng-container>
+                </div>
+                </ng-container>
+                <ng-container formArrayName="ccEmail">
+                    <div *ngFor="let email of ccEmail.controls; let i = index" class="form-group row" >
+                        <ng-container [formGroupName]="i">
+                        <label  class="col-md-1" for=""><ng-container *ngIf="i=== 0">Cc</ng-container></label>
+                        <input type="email" class="form-control form-control-sm col-md-4" placeholder="Cc" formControlName="email">
+                        <button *ngIf="i=== 0" class="btn btn-sm" (click)="newCc()"><i class="fas fa-plus"></i></button>
+                        <button *ngIf="i!== 0" class="btn btn-sm"(click)="deleteCc(i)"><i class="fas fa-minus"></i></button></ng-container>
+                    </div>
+                </ng-container>
+                <ng-container  formArrayName="bccEmail">
+                    <div *ngFor="let email of bccEmail.controls; let i = index" class="form-group row" >
+                        <ng-container [formGroupName]="i">
+                        <label  class="col-md-1" for=""><ng-container *ngIf="i=== 0">Bcc</ng-container></label>
+                        <input type="email" class="form-control form-control-sm col-md-4" placeholder="Bcc" formControlName="email">
+                        <button *ngIf="i=== 0" class="btn btn-sm" (click)="newBcc()"><i class="fas fa-plus"></i></button>
+                        <button *ngIf="i!== 0" class="btn btn-sm"(click)="deleteBcc(i)"><i class="fas fa-minus"></i></button></ng-container>
+                    </div>
+                </ng-container>
+                <div class="form-group row">
+                    <label class="col-md-1" for="">Subject</label>
+                    <input type="text" name="" id="" class="form-control form-control-sm col-md-4" formControlName="subject" placeholder="Subject">
+                </div>
+
+                <div *ngIf="emailType==='timesheet'" class="form-group row" style="padding-right: 2%;">
+                    <label class="col-md-1" for="">Attachment</label>
+                    <a [routerLink]="" class="col-md-3"  (click)="generate()">{{filename}}.xlsx</a>
+                </div>
+
+                <div *ngIf="emailType!=='WFH'" class="form-group row" style="padding-right: 2%;">
+                    <label class="col-md-1" for="">Body</label>
+                    <textarea name="" class="form-control col-md-11"  rows="10" formControlName="message"></textarea>
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="emailType === 'WFH'">
+                <div class="form-group row">
+                    <label class="col-md-1" for="">Body</label>
+                    <div class="col-md-8 border border-dark" style="padding: 2%;">
+                        
+                    
+                
+
+        <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">Hi Sir!</p>
+        <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">Please see work from home details for {{ dateArray[group.get('wfh').value] }} ({{days[group.get('wfh').value]| titlecase}}):</p>
+        <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">Attendance Detail:</p>
+        <table border="1" cellspacing="0" cellpadding="0" align="left" style="border-collapse:collapse;border:none;margin-left:6.75pt;margin-right:6.75pt"><tbody><tr style="height:17.1pt"><td width="103" valign="top" style="width:77.3pt;border:1pt solid windowtext;padding:0cm 5.4pt;height:17.1pt"><p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>LOG IN</b></p></td><td width="103" valign="top" style="width:77.3pt;border-top:1pt solid windowtext;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:none;padding:0cm 5.4pt;height:17.1pt"><p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>LOG OUT</b></p></td></tr><tr style="height:17.1pt"><td width="103" valign="top" style="width:77.3pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt;height:17.1pt"><p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            {{  
+            (group.get('timeInOut')['controls'][group.get('wfh').value].get('timeIn').value!==null)?('2000-01-01T'+group.get('timeInOut')['controls'][group.get('wfh').value].get('timeIn').value | date:'shortTime':'undefined':'en-US'):''}}</p></td><td width="103" valign="top" style="width:77.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt;height:17.1pt"><p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                
+            {{ 
+            (group.get('timeInOut')['controls'][group.get('wfh').value].get('timeOut').value!==null)?('2000-01-01T'+group.get('timeInOut')['controls'][group.get('wfh').value].get('timeOut').value | date:'shortTime':'undefined':'en-US'):''}}</p></td></tr></tbody></table>
+        <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+        <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+        <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+        <p class="MsoNormal" style="margin:0cm 0cm 8pt;line-height:15.6933px;font-size:11pt;font-family:Calibri,sans-serif">Task Accomplishment Summary for the day</p>
+
+        <table border="0" cellspacing="0" cellpadding="0" width="601" style="width:450.8pt;border-collapse:collapse">
+            <tbody>
+               <tr>
+                  <td width="200" valign="top" style="width:150.25pt;border:1pt solid windowtext;padding:0cm 5.4pt">
+                     <p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>TASK</b></p>
+                  </td>
+                  <td width="200" valign="top" style="width:150.25pt;border-top:1pt solid windowtext;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:none;padding:0cm 5.4pt">
+                     <p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>STATUS</b></p>
+                  </td>
+                  <td width="200" valign="top" style="width:150.3pt;border-top:1pt solid windowtext;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:none;padding:0cm 5.4pt">
+                     <p class="MsoNormal" align="center" style="margin:0cm 0cm 0.0001pt;text-align:center;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>REMARKS</b></p>
+                  </td>
+               </tr>
+               <tr *ngIf="wfhTasks.length === 0">
+                <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                    <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">No task for the day</p>
+                 </td>
+                 <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+                 <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+              
+                </tr>
+               <ng-container *ngFor="let task of wfhArray; let i = index">
+                <tr>
+                    <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">{{wfhTasks[i]}}</p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                    
+
+                        <input class="form-control form-control-sm" list=wfhStatus [(ngModel)]="wfhArray[i]['status']" [ngModelOptions]="{standalone: true}">
+                        <datalist id=wfhStatus>
+                            <option value="Completed"></option>
+                            <option value="Ongoing"></option>
+                            
+                        </datalist>
+
+                    
+                    </td>
+                    <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+
+                            <input class="form-control form-control-sm" [(ngModel)]="wfhArray[i]['remarks']" [ngModelOptions]="{standalone: true}">
+
+
+                        
+                    </td>
+                 </tr>
+               </ng-container>
+               <tr>
+                <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;
+                    &nbsp;
+                   </p>
+                </td>
+                <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                </td>
+                <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                </td>
+             </tr>
+             <tr>
+                <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;
+                    &nbsp;
+                   </p>
+                </td>
+                <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                </td>
+                <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                </td>
+             </tr>
+                
+               
+               <tr>
+                  <td width="601" colspan="3" valign="top" style="width:450.8pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                     <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif"><b>Other tasks on Queue:</b></p>
+                  </td>
+               </tr>
+               <tr *ngIf="wfhQueue.length === 0">
+                <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                    <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">No pending task</p>
+                 </td>
+                 <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+                 <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+              
+                </tr>
+               <ng-container *ngFor="let task of wfhQueue">
+                <tr>
+                    <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                       <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">{{task}}</p>
+                    </td>
+                    <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                    </td>
+                    <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt"></td>
+                 </tr>
+               </ng-container>
+               <tr>
+                <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;
+                    &nbsp;
+                   </p>
+                </td>
+                <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                </td>
+                <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                </td>
+             </tr>
+             <tr>
+                <td width="200" valign="top" style="width:150.25pt;border-right:1pt solid windowtext;border-bottom:1pt solid windowtext;border-left:1pt solid windowtext;border-top:none;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;
+                    &nbsp;
+                   </p>
+                </td>
+                <td width="200" valign="top" style="width:150.25pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                </td>
+                <td width="200" valign="top" style="width:150.3pt;border-top:none;border-left:none;border-bottom:1pt solid windowtext;border-right:1pt solid windowtext;padding:0cm 5.4pt">
+                   <p class="MsoNormal" style="margin:0cm 0cm 0.0001pt;line-height:normal;font-size:11pt;font-family:Calibri,sans-serif">&nbsp;</p>
+                </td>
+             </tr>
+               
+               
+            </tbody>
+         </table>
+
+       
+        
+    
+            
+                
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer justify-content-between">
+            <div>
+                <button class="btn btn-primary" (click)="setToWfh()" style="margin: 5px;">WFH</button>
+                <button class="btn btn-primary" (click)="setToTimeSheet()" style="margin: 5px;">Timesheet</button>
+            </div>
+
+            <button class="btn btn-success" (click)="sendEmail()" style="margin: 5px;">Send</button>
+
+        </div>
+  
+      </div>
+    </div>
+
+</ng-container>
+
+
 
 

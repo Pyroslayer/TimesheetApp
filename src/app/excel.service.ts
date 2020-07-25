@@ -2,8 +2,10 @@ import { Injectable } from '@angular/core';
 import {saveAs} from 'file-saver';
 import { Workbook } from 'exceljs';
 import { FormGroup, FormArray } from '@angular/forms';
-import {Constants } from '../assets/constants';
 import { DatePipe } from '@angular/common';
+import { from } from 'rxjs/internal/observable/from';
+import { map } from 'rxjs/operators';
+import { EmailServiceService } from './email-service.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +29,8 @@ export class ExcelService {
   };
   
   days = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-  constructor(private datePipe: DatePipe) {
+  constructor(private datePipe: DatePipe,
+    private email: EmailServiceService) {
     this.workbook = new Workbook();
     this.wts = this.workbook.addWorksheet('WeeklyTimeSheet');
    }
@@ -50,6 +53,27 @@ export class ExcelService {
     this.generateExcel(formGroup.get('dateTo').value, formGroup.get('empInitials').value);
     
 
+    
+  }
+
+  generateBlob(formGroup: FormGroup, list: any[]){
+    this.rowArray = list['rowArray'];
+    this.colArray = list['colArray'];
+    this.othersRowArray = list['othersRowArray'];
+    this.othersColArray = list['othersColArray'];
+    this.finalRow = list['finalRow'];
+    this.totalRowCol = list['totalRowCol'];
+    this.othersTotalRowCol = list['othersTotalRowCol'];
+    this.finalTotal = list['finalTotal'];
+    
+    this.generateRows(15);
+    this.mergeCells();
+    this.generateLayout(formGroup);
+    this.setColumnWidth();
+    this.setRowHeight();
+    this.blobExcel(formGroup.get('dateTo').value, formGroup.get('empInitials').value);
+
+    
     
   }
 
@@ -77,7 +101,7 @@ export class ExcelService {
     row5.getCell(4).value = 'Group:';
     row5.getCell(5).font = { name: 'Arial', size: 10, bold: true };
     row5.getCell(5).alignment = {vertical: 'top', horizontal: 'left'};
-    row5.getCell(5).value = Constants.GROUP[formGroup.get('group').value];
+    row5.getCell(5).value = formGroup.get('group').value;
 
     let row6 = this.wts.getRow(6);   
     row6.getCell(1).value = 'Employee Name:';
@@ -219,9 +243,6 @@ export class ExcelService {
       row13.getCell(cellCounter).value = element.get('hours').value == 0 ? null : date.toTimeString().slice(0, 8);
       cellCounter++;
     });
-    
-    console.log(totalHours);
-    console.log(totalHours%1);
     
     
     row13.getCell(13).value = ('00' + (totalHours - (totalHours % 1))).slice(-2) + ':' + ('00' + Math.round((totalHours % 1) * 60)).slice(-2) + ':00';
@@ -393,8 +414,8 @@ export class ExcelService {
       var row = this.wts.addRow([]);
       row.font = { name: 'Arial', size: 10};
       row.alignment = {vertical: 'middle'};
-      row.getCell(3).value = Constants.TYPE[element.get('type').value];
-      row.getCell(4).value = Constants.ACTIVITIES[element.get('activity').value];
+      row.getCell(3).value = element.get('type').value;
+      row.getCell(4).value = element.get('activity').value;
       row.getCell(5).value = element.get('description').value;
       row.getCell(6).fill = {
         type: 'pattern',
@@ -431,9 +452,9 @@ export class ExcelService {
       var row = this.wts.addRow([]);
       row.font = { name: 'Arial', size: 10};
       row.alignment = {vertical: 'middle'};
-      row.getCell(1).value = Constants.CLIENT_NAME[element.get('cName').value];
-      row.getCell(3).value = Constants.PROJECT_NAME[element.get('pName').value];
-      row.getCell(4).value = Constants.TASK[element.get('task').value];
+      row.getCell(1).value = element.get('cName').value;
+      row.getCell(3).value = element.get('pName').value;
+      row.getCell(4).value = element.get('task').value;
       row.getCell(5).value = element.get('activity').value;
       row.getCell(6).fill = {
         type: 'pattern',
@@ -512,6 +533,25 @@ export class ExcelService {
     this.wts = this.workbook.addWorksheet('WeeklyTimeSheet');
 
   }
+
+  blobExcel(dateTo,empInitials):any{
+    this.workbook.xlsx.writeBuffer().then((data) => {  
+    var file = this.email.attachFile(this.arrayBufferToBase64(data), this.datePipe.transform(dateTo, 'yyyyMMdd') + empInitials.toUpperCase());
+      
+    });
+    this.workbook = new Workbook();
+    this.wts = this.workbook.addWorksheet('WeeklyTimeSheet');
+  }
+
+  arrayBufferToBase64( buffer ) {
+    var binary = '';
+    var bytes = new Uint8Array( buffer );
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode( bytes[ i ] );
+    }
+    return window.btoa( binary );
+}
 
 
 

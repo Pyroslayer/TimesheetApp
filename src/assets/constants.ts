@@ -1,6 +1,5 @@
 export class Constants {
     public static CLIENT_NAME = [
-        '-',
         'BDO',
         'BPI',
         'BSP',
@@ -12,7 +11,6 @@ export class Constants {
         'TeraSystem'
     ];
     public static PROJECT_NAME = [
-        '-',
         'ACS',
         'ARR',
         'CC ph2',
@@ -45,7 +43,6 @@ export class Constants {
     ];
 
     public static TASK = [
-        '-',
         'Change Request Specs',
         'Client/Production Support',
         'Debugging',
@@ -66,7 +63,6 @@ export class Constants {
     ];
 
     public static GROUP = [
-        '-',
         'Accounting and Administration',
         'Administrative Team',
         'Application Support Team 1',
@@ -79,14 +75,12 @@ export class Constants {
     ];
 
     public static TYPE = [
-        '-',
         'Breaktime',
         'Office Activity',
         'Personal'
     ];
 
     public static ACTIVITIES = [
-        '-',
         'General Assembly',
         'Leave',
         'Lunch Break',

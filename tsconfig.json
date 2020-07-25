@@ -22,7 +22,9 @@
       "exceljs": [
         "node_modules/exceljs/dist/exceljs.min"
       ]
-    }
+    },
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
