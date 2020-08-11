@@ -236,6 +236,22 @@ export class HomeComponent implements OnInit {
     if(dateFrom.getDay()==5){
       dateFrom.setDate(dateFrom.getDate() - 6);
       this.group.get('dateFrom').setValue(this.datePipe.transform(dateFrom,'yyyy-MM-dd'));
+      if(confirm('Do you want to clear Time In/Out and work hours?')){
+        this.timeInOut.clear();
+        this.days.forEach(day => {
+            this.timeInOut.push(
+              this.formBuilder.group({
+                timeIn: null,
+                timeOut: null,
+                hours: 0
+              })
+            );
+            this.timeSheet.controls.forEach(row => {
+              row.get(day).setValue(0);
+          });
+        });
+      }
+      this.getTotal()
     }else if(this.group.get('dateTo').value !== '') {
       alert('Date is not a Friday!');
       this.group.get('dateTo').setValue('');
